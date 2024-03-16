@@ -12,8 +12,12 @@ namespace api.Models
         public string Symbol { get; set; } = string.Empty;
         public string CompanyName { get; set; } = string.Empty;
         // make sure it is a decimal(18, 2) for money (18 digits, 2 after decimal)
+        // Purchase
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal Price { get; set; }
+        public decimal Purchase { get; set; }
+        // make sure it is a decimal(18, 2) for money (18 digits, 2 after decimal)
+        // Last Div
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal LastDiv { get; set; }
         public string Industry { get; set; } = string.Empty;
         public long MarketCap { get; set; }
