@@ -6,6 +6,7 @@ using api.Data;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using api.Dtos.Stock;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -22,20 +23,27 @@ namespace api.Controllers
 
         // GET(READ) method
         [HttpGet]
-        public IActionResult GetAll()
+        // async Task<> means that this method is asynchronous
+        public async Task<IActionResult> GetAll()
         {
-            var stocks = _context.Stocks.ToList()
-            .Select(s => s.ToStockDto());
+            // await keyword is used to wait for the task to finish
+            //.ToListAsync() is used to convert the IQueryable to a list
+            var stocks = await _context.Stocks.ToListAsync();
+            // convert to DTO
+            var stockDto = stocks.Select(s => s.ToStockDto());
 
             return Ok(stocks);
         }
 
         // GET(READ) method
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        /// async Task<> means that this method is asynchronous
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
             // search by id
-            var stock = _context.Stocks.Find(id);
+            // await keyword is used to wait for the task to finish
+            // FindAsync() is used to search by id
+            var stock = await _context.Stocks.FindAsync(id);
 
             // if stock is null
             if (stock == null)
@@ -49,11 +57,15 @@ namespace api.Controllers
 
         // POST(CREATE) method
         [HttpPost]
-        public IActionResult Create([FromBody] CreateStockRequestDto stockDto)
+        // async Task<> means that this method is asynchronous
+        public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
         {
             var stockModel = stockDto.ToStockFromCreateDTO();
-            _context.Stocks.Add(stockModel);
-            _context.SaveChanges();
+            // await keyword is used to wait for the task to finish
+            // AddAsync() is used to add to the database
+            await _context.Stocks.AddAsync(stockModel);
+            // save changes
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
         }
@@ -61,9 +73,12 @@ namespace api.Controllers
         // PUT(UPDATE) method
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
+        // async Task<> means that this method is asynchronous
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
         {
-            var stockModel = _context.Stocks.FirstOrDefault(x => x.Id == id);
+            // await keyword is used to wait for the task to finish
+            // FirstOrDefaultAsync() is used to search by id
+            var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
 
             if (stockModel == null)
             {
@@ -77,7 +92,8 @@ namespace api.Controllers
             stockModel.Industry = updateDto.Industry;
             stockModel.MarketCap = updateDto.MarketCap;
 
-            _context.SaveChanges();
+            // save changes
+            await _context.SaveChangesAsync();
 
             return Ok(stockModel.ToStockDto());
         }
@@ -85,17 +101,22 @@ namespace api.Controllers
         // DELETE method
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        // async Task<> means that this method is asynchronous
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var stockModel = _context.Stocks.Find(id);
+            // await keyword is used to wait for the task to finish
+            // FindAsync() is used to search by id
+            var stockModel = await _context.Stocks.FindAsync(id);
 
             if (stockModel == null)
             {
                 return NotFound();
             }
 
+            // remove does not have async
             _context.Stocks.Remove(stockModel);
-            _context.SaveChanges();
+            // save changes
+            await _context.SaveChangesAsync();
 
             // return NoContent() because we are deleting a single resource
             return NoContent();
