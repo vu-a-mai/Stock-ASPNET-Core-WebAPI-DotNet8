@@ -1,4 +1,6 @@
 using api.Data;
+using api.Interfaces;
+using api.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,9 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
     // type "dotnet ef database update" to update the database
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 } );
+
+// Add Interface StockRepository and StockRepository service 
+builder.Services.AddScoped<IStockRepository, StockRepository>();
 
 
 var app = builder.Build();

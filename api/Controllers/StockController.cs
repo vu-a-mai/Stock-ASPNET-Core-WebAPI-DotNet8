@@ -7,6 +7,7 @@ using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using api.Dtos.Stock;
 using Microsoft.EntityFrameworkCore;
+using api.Interfaces;
 
 namespace api.Controllers
 {
@@ -16,8 +17,10 @@ namespace api.Controllers
     public class StockController: ControllerBase
     {
         private readonly ApplicationDBContext _context;
-        public StockController(ApplicationDBContext context)
+        private readonly IStockRepository _stockRepo;
+        public StockController(ApplicationDBContext context, IStockRepository stockRepo)
         {
+            _stockRepo = stockRepo;
             _context = context;
         }
 
@@ -27,8 +30,8 @@ namespace api.Controllers
         public async Task<IActionResult> GetAll()
         {
             // await keyword is used to wait for the task to finish
-            //.ToListAsync() is used to convert the IQueryable to a list
-            var stocks = await _context.Stocks.ToListAsync();
+            // _stockRepo.GetAllAsync() is used to get all the stocks
+            var stocks = await _stockRepo.GetAllAsync();
             // convert to DTO
             var stockDto = stocks.Select(s => s.ToStockDto());
 
