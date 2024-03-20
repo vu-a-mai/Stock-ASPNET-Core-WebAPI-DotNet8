@@ -46,7 +46,7 @@ namespace api.Controllers
             // search by id
             // await keyword is used to wait for the task to finish
             // FindAsync() is used to search by id
-            var stock = await _context.Stocks.FindAsync(id);
+            var stock = await _stockRepo.GetByIdAsync(id);
 
             // if stock is null
             if (stock == null)
@@ -65,10 +65,7 @@ namespace api.Controllers
         {
             var stockModel = stockDto.ToStockFromCreateDTO();
             // await keyword is used to wait for the task to finish
-            // AddAsync() is used to add to the database
-            await _context.Stocks.AddAsync(stockModel);
-            // save changes
-            await _context.SaveChangesAsync();
+            await _stockRepo.CreateAsync(stockModel);
 
             return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
         }
@@ -81,22 +78,12 @@ namespace api.Controllers
         {
             // await keyword is used to wait for the task to finish
             // FirstOrDefaultAsync() is used to search by id
-            var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+            var stockModel = await _stockRepo.UpdateAsync(id, updateDto);
 
             if (stockModel == null)
             {
                 return NotFound();
             }
-
-            stockModel.Symbol = updateDto.Symbol;
-            stockModel.CompanyName = updateDto.CompanyName;
-            stockModel.Purchase = updateDto.Purchase;
-            stockModel.LastDiv = updateDto.LastDiv;
-            stockModel.Industry = updateDto.Industry;
-            stockModel.MarketCap = updateDto.MarketCap;
-
-            // save changes
-            await _context.SaveChangesAsync();
 
             return Ok(stockModel.ToStockDto());
         }
@@ -109,17 +96,12 @@ namespace api.Controllers
         {
             // await keyword is used to wait for the task to finish
             // FindAsync() is used to search by id
-            var stockModel = await _context.Stocks.FindAsync(id);
+            var stockModel = await _stockRepo.DeleteAsync(id);
 
             if (stockModel == null)
             {
                 return NotFound();
             }
-
-            // remove does not have async
-            _context.Stocks.Remove(stockModel);
-            // save changes
-            await _context.SaveChangesAsync();
 
             // return NoContent() because we are deleting a single resource
             return NoContent();
