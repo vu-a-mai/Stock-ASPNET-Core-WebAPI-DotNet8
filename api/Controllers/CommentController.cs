@@ -77,8 +77,27 @@ namespace api.Controllers
             // the commentModel is passed in as the second parameter because it is the first parameter of the method that is being called
             // this is because the method being called is CreateAsync and the first parameter is the comment model and the second parameter is the stockId
             // this is why we are passing in the commentModel as the second parameter
-            return CreatedAtAction(nameof(GetById), new { id = commentModel }, commentModel.ToCommentDto());
+            return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
         }
         
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateDto)
+        {
+            // get the comment by id
+            var comment = await _commentRepo.UpdateAsync(id, updateDto.ToCommentFromUpdate());
+
+            // check if the comment exists
+            // if it doesn't exist, return a 404 not found
+            // if it does exist, continue on
+            if (comment == null)
+            {
+                return NotFound("Comment not found");
+            }
+
+            // return the comment
+            return Ok(comment.ToCommentDto());
+
+        }
     }
 }

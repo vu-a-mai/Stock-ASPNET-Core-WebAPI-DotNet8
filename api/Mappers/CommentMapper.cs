@@ -13,7 +13,7 @@ namespace api.Mappers
         {
             return new CommentDto
             {
-                ID = commentModel.ID,
+                Id = commentModel.Id,
                 Title = commentModel.Title,
                 Content = commentModel.Content,
                 CreatedOn = commentModel.CreatedOn,
@@ -28,6 +28,15 @@ namespace api.Mappers
                 Title = commentDto.Title,
                 Content = commentDto.Content,
                 StockId = stockId
+            };
+        }
+
+        public static Comment ToCommentFromUpdate(this UpdateCommentRequestDto commentDto)
+        {
+            return new Comment
+            {
+                Title = commentDto.Title,
+                Content = commentDto.Content
             };
         }
     }
