@@ -26,8 +26,10 @@ builder.Services.AddDbContext<ApplicationDBContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 } );
 
-// Add Interface StockRepository and StockRepository service 
+// Add Interface StockRepository and StockRepository services 
 builder.Services.AddScoped<IStockRepository, StockRepository>();
+// Add Interface CommentRepository and CommentRepository services
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
 
 var app = builder.Build();
