@@ -14,6 +14,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// prevent Object cycle
+// Need to install NewtonSoftJson through NuGet
+// NewtonSoft.Json by James Newton-King and
+// MVC.NewtonSoftJson by Microsoft
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+});
+
 // Add a database context to the container.
 // Once you have a DbContext, you can inject it into your services.
 builder.Services.AddDbContext<ApplicationDBContext>(options => {
