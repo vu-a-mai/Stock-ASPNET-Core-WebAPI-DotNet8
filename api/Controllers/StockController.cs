@@ -29,6 +29,12 @@ namespace api.Controllers
         // async Task<> means that this method is asynchronous
         public async Task<IActionResult> GetAll()
         {
+            // Perform Dtos validation
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             // await keyword is used to wait for the task to finish
             // _stockRepo.GetAllAsync() is used to get all the stocks
             var stocks = await _stockRepo.GetAllAsync();
@@ -39,10 +45,16 @@ namespace api.Controllers
         }
 
         // GET(READ) method
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         /// async Task<> means that this method is asynchronous
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            // Perform Dtos validation
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             // search by id
             // await keyword is used to wait for the task to finish
             // FindAsync() is used to search by id
@@ -63,6 +75,12 @@ namespace api.Controllers
         // async Task<> means that this method is asynchronous
         public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
         {
+            // Perform Dtos validation
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var stockModel = stockDto.ToStockFromCreateDTO();
             // await keyword is used to wait for the task to finish
             await _stockRepo.CreateAsync(stockModel);
@@ -72,10 +90,16 @@ namespace api.Controllers
 
         // PUT(UPDATE) method
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         // async Task<> means that this method is asynchronous
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
         {
+            // Perform Dtos validation
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             // await keyword is used to wait for the task to finish
             // FirstOrDefaultAsync() is used to search by id
             var stockModel = await _stockRepo.UpdateAsync(id, updateDto);
@@ -90,10 +114,16 @@ namespace api.Controllers
 
         // DELETE method
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         // async Task<> means that this method is asynchronous
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            // Perform Dtos validation
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             // await keyword is used to wait for the task to finish
             // FindAsync() is used to search by id
             var stockModel = await _stockRepo.DeleteAsync(id);

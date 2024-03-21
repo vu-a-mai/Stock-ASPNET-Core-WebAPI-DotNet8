@@ -26,6 +26,12 @@ namespace api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            // Perform Dtos validation
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             // get all comments
             var comments = await _commentRepo.GetAllAsync();
             // convert to DTO
@@ -35,9 +41,15 @@ namespace api.Controllers
             return Ok(commentDto);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            // Perform Dtos validation
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             // get the comment by id
             var comment = await _commentRepo.GetByIdAsync(id);
 
@@ -53,9 +65,15 @@ namespace api.Controllers
             return Ok(comment.ToCommentDto());
         }
 
-        [HttpPost("{stockId}")]
+        [HttpPost("{stockId:int}")]
         public async Task<IActionResult> Create([FromRoute] int stockId, CreateCommentDto commentDto)
         {
+            // Perform Dtos validation
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             // check if the stock exists
             // if it doesn't exist, return a 400 bad request
             // if it does exist, continue on
@@ -81,9 +99,15 @@ namespace api.Controllers
         }
         
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateDto)
         {
+            // Perform Dtos validation
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             // get the comment by id
             var comment = await _commentRepo.UpdateAsync(id, updateDto.ToCommentFromUpdate());
 
@@ -101,9 +125,15 @@ namespace api.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            // Perform Dtos validation
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var commentModel = await _commentRepo.DeleteAsync(id);
 
             if(commentModel == null)
