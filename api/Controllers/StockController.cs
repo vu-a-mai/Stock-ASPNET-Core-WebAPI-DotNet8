@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using api.Dtos.Stock;
 using Microsoft.EntityFrameworkCore;
 using api.Interfaces;
+using api.Helpers;
 
 namespace api.Controllers
 {
@@ -27,7 +28,7 @@ namespace api.Controllers
         // GET(READ) method
         [HttpGet]
         // async Task<> means that this method is asynchronous
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
         {
             // Perform Dtos validation
             if(!ModelState.IsValid)
@@ -37,7 +38,7 @@ namespace api.Controllers
 
             // await keyword is used to wait for the task to finish
             // _stockRepo.GetAllAsync() is used to get all the stocks
-            var stocks = await _stockRepo.GetAllAsync();
+            var stocks = await _stockRepo.GetAllAsync(query);
             // convert to DTO
             var stockDto = stocks.Select(s => s.ToStockDto());
 
