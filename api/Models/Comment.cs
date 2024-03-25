@@ -20,5 +20,9 @@ namespace api.Models
         // Link to the stock
         // Navigation property
         public Stock? Stock { get; set; }
+
+        // One-To-One
+        public string AppUserId { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }
