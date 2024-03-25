@@ -42,9 +42,9 @@ namespace api.Controllers
             // _stockRepo.GetAllAsync() is used to get all the stocks
             var stocks = await _stockRepo.GetAllAsync(query);
             // convert to DTO
-            var stockDto = stocks.Select(s => s.ToStockDto());
+            var stockDto = stocks.Select(s => s.ToStockDto()).ToList();
 
-            return Ok(stocks);
+            return Ok(stockDto);
         }
 
         // GET(READ) method

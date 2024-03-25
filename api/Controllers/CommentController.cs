@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.Comment;
+using api.Extensions;
 using api.Interfaces;
 using api.Mappers;
+using api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -15,11 +18,13 @@ namespace api.Controllers
     {
         private readonly ICommentRepository _commentRepo;
         private readonly IStockRepository _stockRepo;
+        private readonly UserManager<AppUser> _userManager;
 
-        public CommentController(ICommentRepository commentRepo, IStockRepository stockRepo)
+        public CommentController(ICommentRepository commentRepo, IStockRepository stockRepo, UserManager<AppUser> userManager)
         {
             _commentRepo = commentRepo;
             _stockRepo = stockRepo;
+            _userManager = userManager;
         }
 
         // GET All Method
@@ -82,9 +87,16 @@ namespace api.Controllers
                 return BadRequest("Stock does not exist");
             }
 
+            // get the username from the user
+            var username = User.GetUserName();
+            var appUser = await _userManager.FindByNameAsync(username);
+
             // used the mapper to map the comment DTO to the comment model
             // this will create a new comment model with the values from the DTO and set the stockId to the stockId passed in
             var commentModel = commentDto.ToCommentFromCreate(stockId);
+
+            // set the AppUserId to the id of the user that is logged in
+            commentModel.AppUserId = appUser.Id;
             
             // then we call the CreateAsync method on the comment repository to create the comment and return the comment as a DTO
             await _commentRepo.CreateAsync(commentModel);
