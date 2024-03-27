@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.Comment;
 using api.Extensions;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +33,8 @@ namespace api.Controllers
 
         // GET All Method
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [Authorize]
+        public async Task<IActionResult> GetAll([FromQuery] CommentQueryObject queryObject)
         {
             // Perform Dtos validation
             if(!ModelState.IsValid)
@@ -40,7 +43,7 @@ namespace api.Controllers
             }
 
             // get all comments
-            var comments = await _commentRepo.GetAllAsync();
+            var comments = await _commentRepo.GetAllAsync(queryObject);
             // convert to DTO
             var commentDto = comments.Select(c => c.ToCommentDto());
 
