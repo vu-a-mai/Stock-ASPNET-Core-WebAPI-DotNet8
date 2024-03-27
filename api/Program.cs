@@ -114,7 +114,9 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 // Add Interface PortfolioRepository and PortfolioRepository services
 builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
-
+// Add Interface FMPService and FMPService services
+builder.Services.AddScoped<IFMPService, FMPService>();
+builder.Services.AddHttpClient<IFMPService, FMPService>();
 
 var app = builder.Build();
 
